@@ -1,4 +1,8 @@
-# vuetified-dataportal
+# Dataportal UI
+
+![data portal site header image](https://dataportal-ui-github.s3-ap-southeast-2.amazonaws.com/dataportal_site_header.png)
+
+This is the user interface code for the Stemformatics Dataportal. It is for interactig with the dataportal API. 
 
 ## Project setup
 ```
