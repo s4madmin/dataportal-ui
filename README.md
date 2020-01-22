@@ -4,15 +4,25 @@
 
 This is the user interface code for the Stemformatics Dataportal. It is for interactig with the dataportal API. 
 
-## Project setup
+## Getting started
+
+Ensure the latest version of node.js is installed on your machine. 
+To run this application locally, pull the repo to your machine and run:
 ```
 npm install
 ```
-
-### Compiles and hot-reloads for development
+You then have two options, 
 ```
 npm run serve
 ```
+compiles and hot-reloads for development, or
+```
+vue ui
+```
+to utilize the vue graphical user interface un your browser. 
+This is the recommended approach for getting started. 
+
+![vue ui command](https://dataportal-ui-github.s3-ap-southeast-2.amazonaws.com/vue_ui_command.png)
 
 ### Compiles and minifies for production
 ```
