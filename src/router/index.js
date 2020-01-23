@@ -6,6 +6,8 @@ import Download from '../views/Download.vue'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import AnnotationAnalysis from '../views/AnnotationAnalysis.vue'
+import About from '../views/About.vue'
+
 
 Vue.use(VueRouter)
 
@@ -39,6 +41,11 @@ const routes = [
     path: '/aa',
     name: 'aa',
     component: AnnotationAnalysis
+  },
+  {
+    path: '/about',
+    name: 'about',
+    component: About
   },
 ]
 

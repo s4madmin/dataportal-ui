@@ -15,7 +15,7 @@
       </template>
 
         <v-col>
-            <v-img src="https://jacks-centos7.sfo2.digitaloceanspaces.com/Random/stemformatics_logo.59.51%20am.png" style="height: 30%; width: 30%; opacity: 0.7    "/> 
+            <v-img src="https://jacks-centos7.sfo2.digitaloceanspaces.com/Random/stemformatics_logo.59.51%20am.png" style="height: 30%; width: 30%; opacity: 0.7"/> 
             <br>
             <v-toolbar-title style="color: white; font-family: roboto;">
             <!-- <p style="color: orange; font-family: roboto;">Data Portal</p> -->
@@ -27,11 +27,11 @@
 	<template v-slot:extension>
 		<v-tabs background-color="transparent">
 			<v-tab to="/home"><p style="color: orange; font-family: roboto;">Home</p></v-tab>
-			<v-tab to="/"><p style="color: orange; font-family: roboto;">About</p></v-tab>
+			<v-tab to="/about"><p style="color: orange; font-family: roboto;">About</p></v-tab>
 			<v-tab to="/aa"><p style="color: orange; font-family: roboto;">Annotation | Analysis</p></v-tab>
-			<v-tab to="/browse"><p style="color: orange; font-family: roboto;">Browse</p></v-tab>
-			<v-tab to="/download"><p style="color: orange; font-family: roboto;">Download</p></v-tab>
-
+			<!-- <v-tab to="/browse"><p style="color: orange; font-family: roboto;">Browse</p></v-tab> -->
+			<v-tab to="/download"><p style="color: orange; font-family: roboto;">Developers</p></v-tab> 
+      <v-tab to="/login"><p style="color: orange; font-family: roboto;">Sign in</p></v-tab> 
 		</v-tabs>
 	</template>
 
@@ -42,7 +42,12 @@
 
 <script>
 export default {
-	
+  data: function(){
+    return{
+      
+    }
+  },
+
 }
 </script>
 
