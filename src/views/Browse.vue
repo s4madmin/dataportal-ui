@@ -4,21 +4,34 @@
             <v-row>
                 <v-col cols="12" sm="2" style="background-color: white;"/>
 
-                <v-col cols="12" sm="6" style="background-color: white;">
-                   
+                <v-col cols="12" sm="5" style="background-color: white;">
+                        <!-- {{titles}} -->
                         <v-text-field
                             color="#6A76AB"
                             style="font-family: roboto;"
-                            label="Search"
+                            label="Text Search"
                             v-model="search"
-                            @keyup.enter="searchBox()"
-                        ></v-text-field>
-            
+                            :loading="isLoading"
+                            @keyup.enter="postSearch()"
+                        >
+                        
+                        </v-text-field>
+                </v-col>
+
+                <v-col cols="12" sm="1" style="background-color: white;">
+                    <v-autocomplete
+                        v-model="search"
+                        :items="autoSearchItems"
+                        color="#6A76AB"
+                        style="font-family: roboto;"
+                        label="Filter Options"
+                    ></v-autocomplete>
                 </v-col>
 
                 <v-col class="d-flex" cols="12" sm="2" style="background-color: white;">
                     
                         <v-select
+                            label="Per Page"
                             color="#6A76AB"
                             v-model="perPage"
                             :items="itemsPerPage"
@@ -30,32 +43,43 @@
                 <v-col cols="12" sm="2" style="background-color: white;"/>
 
             </v-row>
+
+            <!-- <v-row>
+                <v-col cols="12" sm="2"/>
+                    <v-col cols="12" sm="6" v-for="(item, index) in searchTerms" :key="index">
+                        <v-row justify="center" align="center">
+                            <v-chip :ripple="false">{{item}}</v-chip>
+                        </v-row>
+                    </v-col>
+                <v-col cols="12" sm="2"/>
+                <v-col cols="12" sm="2"/>
+            </v-row> -->
     
             <v-row no-gutters>
                 
                 <v-col cols="12" sm="2" style="background-color: white;">
                     <v-navigation-drawer permanent>
                     <v-list>
-                        <v-list-item>
+                        <!-- <v-list-item>
                             <v-row justify="center">
                                 <v-expansion-panels :flat="flat" :tile="tile">
                                     <v-expansion-panel>
-                                        <v-expansion-panel-header style="color: black; font-family: roboto;">Organism</v-expansion-panel-header>
+                                        <v-expansion-panel-header style="color: black; font-family: roboto;">Filters</v-expansion-panel-header>
                                             <v-expansion-panel-content>
                                                     <v-row>
                                                         <v-col cols="2">
                                                         </v-col>
                                                         <v-col cols="10">
-                                                            <v-checkbox v-model="selected" label="Human" value="Human" style="color: black; font-family: roboto;"></v-checkbox>
-                                                            <v-checkbox v-model="selected" label="Mouse" value="Mouse" style="color: black; font-family: roboto;"></v-checkbox>
+                                                            <v-checkbox color="orange" v-model="selected" label="Human" value="Human" style="color: black; font-family: roboto;"></v-checkbox>
+                                                            <v-checkbox color="orange" v-model="selected" label="Mouse" value="Mouse" style="color: black; font-family: roboto;"></v-checkbox>
                                                         </v-col>
                                                     </v-row>
                                             </v-expansion-panel-content>
                                     </v-expansion-panel>
                                 </v-expansion-panels>
                             </v-row>
-                        </v-list-item>
-                        <v-list-item>
+                        </v-list-item> -->
+                        <!-- <v-list-item>
                             <v-row justify="center">
                                 <v-expansion-panels :flat="flat" :tile="tile">
                                     <v-expansion-panel>
@@ -92,12 +116,12 @@
                                     </v-expansion-panel>
                                 </v-expansion-panels>
                             </v-row>
-                        </v-list-item>
+                        </v-list-item> -->
                     </v-list>
 
                     </v-navigation-drawer>
                 </v-col>
-
+                <!-- {{lists}} -->
                 <v-col cols="12" sm="8" style="background-color: white;">
                     
                             <!-- <v-card> -->
@@ -184,7 +208,7 @@
                 </v-col>
 
                 <v-col cols="12" sm="2" style="background-color: white;">
-                    
+                    <go-top bg-color="#6A76AB"></go-top>
                 </v-col>
             </v-row>
         </v-app>
@@ -193,15 +217,22 @@
 
 <script>
 import axios from 'axios'
+import GoTop from '@inotom/vue-go-top';
 
 // import Multiselect from 'vue-multiselect'
 
   export default {
     components: {
-        // Multiselect,
+        GoTop,
     },
     data () {
       return {
+        autoSearchItems: ['human', 'mouse', 'brain', 'skin'],
+        autoSearchValues: ['foo', 'bar'],
+        autoSearchValue: null,
+
+        isLoading: false,
+        
         tile: true, // For the expansion panels
         flat: true, // For the expansion panels
         itemsPerPage: [5, 10, 20, 50, 100],
@@ -213,7 +244,10 @@ import axios from 'axios'
         checkbox2: false,
         titles: [],
         dialog: false,
-        search: null,
+        search: '',
+        searchChip: false,
+        searchTerms: [],
+        submitSearch: null,
         overlay: true,
         totalVisible: 10,
       }
@@ -249,8 +283,30 @@ import axios from 'axios'
         },
     },
     methods: {
-        searchBox: function(){
-            alert(this.search)
+        postSearch: function(){
+          
+            axios.post("https://jack.stemformatics.org/api/summary_table_search",
+            {
+                headers: {
+                "Access-Control-Allow-Origin": "* ",
+                "Content-Type": 'application/json;charset=UTF-8',
+                },
+                data: {
+                    "searchTerm": this.search,
+                }
+            })
+            .then(result => this.titles = result.data.data.map(results => {
+                
+                var i;
+    
+                for (i=0; i<results.length; i++){
+                return {
+                    dataset_id: results[0], 
+                    title: results[1],
+                    authors: results[2], 
+                    description: results[3]}
+                }
+            }))            
         },
         scrollToTop() { // Scroll to the top of the screen on pagination click. 
             // window.scrollTo(0,0);
