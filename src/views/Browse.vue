@@ -11,21 +11,9 @@
                         label="Filter Options"
                     ></v-autocomplete>
                 </v-col>
-
                 <v-col cols="12" sm="8" style="background-color: white;">
-                        <!-- {{titles}} -->
-                        <!-- <v-text-field
-                            color="#6A76AB"
-                            style="font-family: roboto;"
-                            label="Text Search"
-                            v-model="search"
-                            :loading="isLoading"
-                            @keyup.enter="postSearch()"
-                        >
-                        
-                        </v-text-field> -->
-                        <!-- {{titles}} -->
                         <v-card-text>
+                            <!-- @change="dsdialog = true"  turn this on to direct straight to the dataset expand/explore modal. -->
                             <v-autocomplete
                                 v-model="model"
                                 :items="items"
@@ -42,64 +30,77 @@
                                 return-object
                             ></v-autocomplete>
                         </v-card-text>
-
                         <v-expand-transition>
-                        <v-list v-if="model" >
-                            <v-list-item
-                            v-for="(field, i) in fields"
-                            :key="i"
-                            >
-                            <v-list-item-content>
-                                <v-list-item-title v-text="field.value"></v-list-item-title>
-                                <v-list-item-subtitle v-text="field.key"></v-list-item-subtitle>
-                            </v-list-item-content>
-                            </v-list-item>
-                        </v-list>
-                        </v-expand-transition>
+                            <v-list v-if="model" >
+                                <v-list-item
+                                v-for="(field, i) in fields"
+                                :key="i"
+                                >
+                                <v-list-item-content>
+                                    <v-list-item-title v-text="field.value"></v-list-item-title>
+                                    <v-list-item-subtitle v-text="field.key"></v-list-item-subtitle>
+                                    
+                                </v-list-item-content>
+                                </v-list-item>
+                                <v-container fluid>
+                                    <v-row>
+                                        <v-col cols="12" sm="9"/>
 
+                                        <v-col cols="12" sm="1">
+                                            <v-btn
+                                                color="#6A76AB"
+                                                @click.stop="dsdialog.show = true, dsdialog.data = model"
+                                                @click="setDialogData()"
+                                            >
+                                                Explore
+                                                <v-icon right>mdi-close-circle</v-icon>
+                                            </v-btn>
+                                        </v-col>
+                                        <v-col cols="12" sm="1"/>
+                                        <v-col cols="12" sm="1">
+                                            <v-btn
+                                                :disabled="!model"
+                                                color="orange"
+                                                @click="model = null"
+                                            >
+                                                Clear
+                                                <v-icon right>mdi-close-circle</v-icon>
+                                            </v-btn>
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
+                            </v-list>
+                        </v-expand-transition>
                         <v-card-actions>
                             <v-row>
                                 <v-col cols="12" sm="10"/>
                                 <v-col cols="12" sm="1">
-                                    <v-btn
-                                        :disabled="!model"
-                                        color="orange"
-                                        @click.stop="dsdialog = true"
-                                    >
-                                        Open
-                                        <v-icon right>mdi-close-circle</v-icon>
-                                    </v-btn>
-
                                     <v-dialog
-                                    v-model="dsdialog"
+                                    fullscreen 
+                                    hide-overlay 
+                                    transition="dialog-bottom-transition"
+                                    v-model="dsdialog.show"
                                     max-width="290"
                                     >
+                                        <v-card>
+                                            <v-toolbar dark color="#6A76AB">
+                                                <v-spacer></v-spacer>
+                                                <v-btn right icon dark color="orange" @click="dsdialog.show = false">
+                                                    <v-icon>mdi-close</v-icon>
+                                                </v-btn>
+                                            </v-toolbar>
 
-                                        <div style="height:100%; width: 100%;">
-                                            <p>{{model}}</p>
-                                        </div>
-
+                                            <p>{{dsdialog.data.Title}}</p>
+                                            <p>{{dsdialog.data.Dataset_id}}</p>
+                                            <p>{{dsdialog.data.Authors}}</p>
+                                            <p>{{dsdialog.data.Description}}</p>
+                                        </v-card>
                                     </v-dialog>
-
-
-                                </v-col>
-                                <v-col cols="12" sm="1">
-                                    <v-btn
-                                        :disabled="!model"
-                                        color="#6A76AB"
-                                        @click="model = null"
-                                    >
-                                        Clear
-                                        <v-icon right>mdi-close-circle</v-icon>
-                                    </v-btn>
                                 </v-col>
                             </v-row>
                         </v-card-actions>
-
                 </v-col>
-
                 <v-col class="d-flex" cols="12" sm="2" style="background-color: white;">
-                    
                         <v-select
                             label="Per Page"
                             color="#6A76AB"
@@ -107,176 +108,62 @@
                             :items="itemsPerPage"
                         >
                         </v-select>
-            
                 </v-col>
-
-                <!-- <v-col cols="12" sm="2" style="background-color: white;"/> -->
-
             </v-row>
-
-            <!-- <v-row>
-                <v-col cols="12" sm="2"/>
-                    <v-col cols="12" sm="6" v-for="(item, index) in searchTerms" :key="index">
-                        <v-row justify="center" align="center">
-                            <v-chip :ripple="false">{{item}}</v-chip>
-                        </v-row>
-                    </v-col>
-                <v-col cols="12" sm="2"/>
-                <v-col cols="12" sm="2"/>
-            </v-row> -->
-    
-            <v-row no-gutters>
-                
+            <v-row no-gutters>   
                 <v-col cols="12" sm="2" style="background-color: white;">
-                    <!-- <v-navigation-drawer permanent> -->
-                    <!-- <v-list> -->
-                        <!-- <v-list-item>
-                            <v-row justify="center">
-                                <v-expansion-panels :flat="flat" :tile="tile">
-                                    <v-expansion-panel>
-                                        <v-expansion-panel-header style="color: black; font-family: roboto;">Filters</v-expansion-panel-header>
-                                            <v-expansion-panel-content>
-                                                    <v-row>
-                                                        <v-col cols="2">
-                                                        </v-col>
-                                                        <v-col cols="10">
-                                                            <v-checkbox color="orange" v-model="selected" label="Human" value="Human" style="color: black; font-family: roboto;"></v-checkbox>
-                                                            <v-checkbox color="orange" v-model="selected" label="Mouse" value="Mouse" style="color: black; font-family: roboto;"></v-checkbox>
-                                                        </v-col>
-                                                    </v-row>
-                                            </v-expansion-panel-content>
-                                    </v-expansion-panel>
-                                </v-expansion-panels>
-                            </v-row>
-                        </v-list-item> -->
-                        <!-- <v-list-item>
-                            <v-row justify="center">
-                                <v-expansion-panels :flat="flat" :tile="tile">
-                                    <v-expansion-panel>
-                                        <v-expansion-panel-header style="color: black; font-family: roboto;">Datasets</v-expansion-panel-header>
-                                            <v-expansion-panel-content>
-                                                    <v-row>
-                                                        <v-col cols="2">
-                                                        </v-col>
-                                                        <v-col cols="10">
-                                                            <v-checkbox v-model="selected" label="Public" value="Public" style="color: black; font-family: roboto;"></v-checkbox>
-                                                            <v-checkbox v-model="selected" label="Private" value="Private" style="color: black; font-family: roboto;"></v-checkbox>
-                                                        </v-col>
-                                                    </v-row>
-                                            </v-expansion-panel-content>
-                                    </v-expansion-panel>
-                                </v-expansion-panels>
-                            </v-row>
-                        </v-list-item>
-                        <v-list-item>
-                            <v-row justify="center">
-                                <v-expansion-panels :flat="flat" :tile="tile">
-                                    <v-expansion-panel>
-                                        <v-expansion-panel-header style="color: black; font-family: roboto;">Categories</v-expansion-panel-header>
-                                            <v-expansion-panel-content>
-                                                    <v-row>
-                                                        <v-col cols="2">
-                                                        </v-col>
-                                                        <v-col cols="10">
-                                                            <v-checkbox v-model="selected" label="Singe Cell" value="Single Cell" style="color: black; font-family: roboto;"></v-checkbox>
-                                                            <v-checkbox v-model="selected" label="Multi Cell" value="Multi Cell" style="color: black; font-family: roboto;"></v-checkbox>
-                                                        </v-col>
-                                                    </v-row>
-                                            </v-expansion-panel-content>
-                                    </v-expansion-panel>
-                                </v-expansion-panels>
-                            </v-row>
-                        </v-list-item> -->
-                    <!-- </v-list> -->
-
-                    <!-- </v-navigation-drawer> -->
                 </v-col>
-                <!-- {{lists}} -->
                 <v-col cols="12" sm="8" style="background-color: white;">
-                    
-                            <!-- <v-card> -->
-                                <div v-for="(item, index) in lists" :key="index" :per-page="perPage" :current-page="currentPage" :items="titles" color="#ffffff">
-                                    <v-row>
-                                        
-                                        <v-col cols="12" sm="2">
-
-                                            <v-row>
-                                                <v-col cols="12" sm="2">
-                                                </v-col>
-                                                <v-col cols="12" sm="5">
-                                                    <img src="https://images.pexels.com/photos/45239/white-blood-cell-cell-blood-cell-blood-45239.jpeg?cs=srgb&dl=cell-human-science-45239.jpg&fm=jpg" class="card-img" style="height:200px; width:150px;" alt="...">
-                                                </v-col>
-                                                <v-col cols="12" sm="5">
-                                                </v-col>
-                                            </v-row>
-
-                                        </v-col>
-
-                                        <v-col cols="8" sm="8" md="8">
-                                        </v-col>
-                                        <v-col cols="2" sm="2" md="2">
-                                            <v-row>
-                                                <v-col cols="12" sm="2">
-                                                </v-col>
-                                                <v-col cols="12" sm="8">
-                                                    <v-card-title sm="12">
-                                                        <!-- <p style="color: orange; font-family: roboto;">{{item.dataset_id }}</p> -->
-                                                    </v-card-title>
-                                                </v-col>
-                                                <v-col cols="12" sm="2">
-                                                </v-col>
-                                            </v-row>
-                                        </v-col>
-                                    </v-row>
-
-                                    <v-card-title style="color: orange; font-family: roboto; font-size: 150%;">Title: </v-card-title>
-                                    <v-card-subtitle style="color: black; font-family: roboto; font-size: 100%;"><p>{{item.Title}}</p></v-card-subtitle>
-                                    <v-card-title style="color: orange; font-family: roboto; font-size: 150%;">Authors: </v-card-title>
-                                    <v-card-subtitle style="color: black; font-family: roboto; font-size: 100%;">{{item.Authors}}</v-card-subtitle>
-
-                                    <v-card-actions>
-                                    <v-expansion-panels :flat="flat" :tile="tile">
-                                        <v-expansion-panel tile>
-                                        <v-expansion-panel-header style="color: orange; font-family: roboto; font-size: 110%;">More</v-expansion-panel-header>
-                                        <v-expansion-panel-content >
-                                            <v-tabs fixed-tabs color="#6A76AB">
-                                                <v-tab>
-                                                Description
-                                                </v-tab>
-                                                <v-tab-item>
-                                                    <br>
-                                                    {{item.Description}}
-                                                </v-tab-item>
-                                            </v-tabs>
-                                            <br>
-                                            <br>
-                                        </v-expansion-panel-content>
-                                        </v-expansion-panel>
-                                    </v-expansion-panels>
-                                    <br>
-                                    <br>
-                                    <br>
-                                    <br>
-                                    </v-card-actions>
-                                    <hr style="color: #6A76AB;">
-
-                                </div>
-                                
-                            <!-- </v-card> -->
-
-                            <div class="text-center" @click="scrollToTop()">
-                                <v-pagination
-                                    color="#6A76AB"
-                                    circle
-                                    prev-icon="mdi-menu-left"
-                                    next-icon="mdi-menu-right"
-                                    v-model="currentPage"
-                                    :length="90"
-                                    :total-visible="perPage"
-                                ></v-pagination>
-                            </div>
+                    <div v-for="(item, index) in lists" :key="index" :per-page="perPage" :current-page="currentPage" :items="titles" color="#ffffff">
+                        <v-row>
+                            <v-col cols="12" sm="2">
+                                <v-row>
+                                    <v-col cols="12" sm="2">
+                                    </v-col>
+                                    <v-col cols="12" sm="5">
+                                        <img src="https://images.pexels.com/photos/45239/white-blood-cell-cell-blood-cell-blood-45239.jpeg?cs=srgb&dl=cell-human-science-45239.jpg&fm=jpg" class="card-img" fluid style="height:200px; width:150px;" alt="...">
+                                    </v-col>
+                                    <v-col cols="12" sm="5">
+                                    </v-col>
+                                </v-row>
+                            </v-col>
+                            <v-col cols="12" sm="10">
+                                <v-card-title style="color: orange; font-family: roboto; font-size: 150%;">Title: </v-card-title>
+                                <v-card-subtitle style="color: black; font-family: roboto; font-size: 100%;"><p>{{item.Title}}</p></v-card-subtitle>
+                                <v-card-title style="color: orange; font-family: roboto; font-size: 150%;">Authors: </v-card-title>
+                                <v-card-subtitle style="color: black; font-family: roboto; font-size: 100%;">{{item.Authors}}</v-card-subtitle>
+                                <v-card-actions>
+                                <v-expansion-panels :flat="flat" :tile="tile">
+                                    <v-expansion-panel tile>
+                                    <v-expansion-panel-header style="color: orange; font-family: roboto; font-size: 110%;">Description</v-expansion-panel-header>
+                                    <v-expansion-panel-content >
+                                        {{item.Description}}
+                                        <br>
+                                        <br>
+                                    </v-expansion-panel-content>
+                                    </v-expansion-panel>
+                                </v-expansion-panels>
+                                <br>
+                                <br>
+                                <br>
+                                <br>
+                                </v-card-actions>
+                                <hr style="color: #6A76AB;">
+                            </v-col>
+                        </v-row>
+                    </div>
+                        <div class="text-center" @click="scrollToTop()">
+                            <v-pagination
+                                color="#6A76AB"
+                                circle
+                                prev-icon="mdi-menu-left"
+                                next-icon="mdi-menu-right"
+                                v-model="currentPage"
+                                :length="90"
+                                :total-visible="perPage"
+                            ></v-pagination>
+                        </div>
                 </v-col>
-
                 <v-col cols="12" sm="2" style="background-color: white;">
                     <go-top bg-color="#6A76AB"></go-top>
                 </v-col>
@@ -303,7 +190,10 @@ import GoTop from '@inotom/vue-go-top';
         isLoading: false,
         model: null,
         search: null,
-        dsdialog: false,
+        dsdialog: {
+            "show": false,
+            "data": this.$session.get("dialogData"),
+        },
         autoSearchItems: ['human', 'mouse', 'brain', 'skin'],
         autoSearchValues: ['foo', 'bar'],
         autoSearchValue: null,
@@ -404,6 +294,9 @@ import GoTop from '@inotom/vue-go-top';
         },
     },
     methods: {
+        setDialogData: function(){
+            this.$session.set("dialogData",this.model)
+        }, 
         expandDataset: function(){
             
         },
